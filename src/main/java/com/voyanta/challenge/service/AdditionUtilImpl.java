@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import com.voyanta.challenge.dao.AdditionEntityRepository;
@@ -23,6 +24,7 @@ public class AdditionUtilImpl implements AdditionUtil {
 
 	final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	@CacheEvict(value = "AdditionEntityRepository.findOne", key = "#p0.getId()")
 	public AdditionResponse calculateAndSave(AdditionRequest additionRequest) {
 		AdditionResponse response = additionFacade.add(additionRequest.getId(),
 				additionRequest.getAddends());

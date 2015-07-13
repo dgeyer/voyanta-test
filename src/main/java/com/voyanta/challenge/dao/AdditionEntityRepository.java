@@ -11,7 +11,7 @@ import com.voyanta.challenge.dao.entity.AdditionEntity;
 public interface AdditionEntityRepository extends
 		CrudRepository<AdditionEntity, String> {
 
-	@Cacheable("AdditionEntityRepository.findOne")
+	@Cacheable(value = "AdditionEntityRepository.findOne", key = "#p0")
 	@Override
 	public AdditionEntity findOne(String id);
 
