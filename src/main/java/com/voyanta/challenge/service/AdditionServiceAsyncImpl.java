@@ -18,9 +18,9 @@ import com.voyanta.challenge.dto.coretoclient.AdditionResponse;
 public class AdditionServiceAsyncImpl implements AdditionServiceAsync {
 
 	@Autowired
-	AdditionEntityRepository repository;
+	private AdditionEntityRepository repository;
 	@Autowired
-	AdditionUtil additionUtil;
+	private AdditionUtil additionUtil;
 
 	final Logger logger = LoggerFactory.getLogger(this.getClass());
 
