@@ -32,16 +32,21 @@ public class AdditionServiceAsyncImpl implements AdditionServiceAsync {
 		logger.debug("findOne of additionEntity id {}", additionRequest.getId());
 		AdditionEntity additionEntity = this.repository.findOne(additionRequest
 				.getId());
-		AdditionResponse response;
+		AdditionResponse response = buildAdditionResponse(additionRequest,
+				additionEntity);
+		return new AsyncResult<AdditionResponse>(response);
+	}
 
+	private AdditionResponse buildAdditionResponse(
+			AdditionRequest additionRequest, AdditionEntity additionEntity) {
+		AdditionResponse response;
 		if (additionEntity == null) {
 			logger.debug("additionEntity is null");
 			response = additionUtil.calculateAndSave(additionRequest);
-
 		} else {
 			logger.debug("additionEntity is not null", additionEntity.getId());
 			response = AdditionResponse.from(additionEntity);
 		}
-		return new AsyncResult<AdditionResponse>(response);
+		return response;
 	}
 }

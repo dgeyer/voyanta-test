@@ -7,15 +7,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import com.voyanta.challenge.VoyantaChallengeConfiguration;
 import com.voyanta.challenge.dto.coretoclient.AdditionResponse;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = VoyantaChallengeConfiguration.class, loader = AnnotationConfigContextLoader.class)
+@SpringApplicationConfiguration(classes = VoyantaChallengeConfiguration.class)
 public class AdditionFacadeTest {
 
 	@Autowired

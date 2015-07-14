@@ -22,7 +22,8 @@ public class AdditionUtilImpl implements AdditionUtil {
 	@Autowired
 	AdditionFacade additionFacade;
 
-	final Logger logger = LoggerFactory.getLogger(this.getClass());
+	final static Logger logger = LoggerFactory
+			.getLogger(AdditionUtilImpl.class);
 
 	@CacheEvict(value = "AdditionEntityRepository.findOne", key = "#p0.getId()")
 	public AdditionResponse calculateAndSave(AdditionRequest additionRequest) {
