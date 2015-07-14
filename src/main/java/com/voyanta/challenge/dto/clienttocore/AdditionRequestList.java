@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AdditionRequestList {
 	@NotNull
-	private long id;
+	private Long id;
 	@NotNull
 	private List<AdditionRequest> additionList = new LinkedList<AdditionRequest>();
 
@@ -26,11 +26,11 @@ public class AdditionRequestList {
 		return this.additionList.add(additionRequest);
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

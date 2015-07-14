@@ -26,7 +26,7 @@ public class AdditionUtilImpl implements AdditionUtil {
 	@Autowired
 	private AdditionFacade additionFacade;
 
-	final static Logger logger = LoggerFactory
+	private final static Logger logger = LoggerFactory
 			.getLogger(AdditionUtilImpl.class);
 
 	@CacheEvict(value = "AdditionEntityRepository.findOne", key = "#p0.getId()")

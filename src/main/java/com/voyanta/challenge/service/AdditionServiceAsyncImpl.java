@@ -22,8 +22,9 @@ public class AdditionServiceAsyncImpl implements AdditionServiceAsync {
 	@Autowired
 	private AdditionUtil additionUtil;
 
-	final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	@Override
 	@Async
 	public Future<AdditionResponse> add(AdditionRequest additionRequest)
 			throws InterruptedException {

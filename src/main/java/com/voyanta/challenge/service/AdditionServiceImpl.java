@@ -43,7 +43,7 @@ public class AdditionServiceImpl implements AdditionService {
 	@Value("${max-operation-list-size}")
 	private Integer maxOperationsListSize;
 
-	final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public AdditionResponseList processSync(
@@ -76,6 +76,7 @@ public class AdditionServiceImpl implements AdditionService {
 		}
 	}
 
+	@Override
 	public List<Future<AdditionResponse>> processAsync(
 			AdditionRequestList additionRequestList)
 			throws InterruptedException {
@@ -94,6 +95,7 @@ public class AdditionServiceImpl implements AdditionService {
 		return results;
 	}
 
+	@Override
 	public int findAdditionListStatus(Long additionListId) {
 		AdditionListEntity additionListEntity = additionListRepo
 				.findOne(additionListId);
@@ -113,6 +115,7 @@ public class AdditionServiceImpl implements AdditionService {
 		additionListRepo.save(additionListEntity);
 	}
 
+	@Override
 	public AdditionResponse findOneAddition(String id) {
 		validateIdIsNotNull(id);
 		logger.debug("search additionEntity with id {}", id);
@@ -130,11 +133,13 @@ public class AdditionServiceImpl implements AdditionService {
 		}
 	}
 
+	@Override
 	public void deleteOneAddition(String id) {
 		validateIdIsNotNull(id);
 		additionRepo.delete(id);
 	}
 
+	@Override
 	@CacheEvict(value = "AdditionEntityRepository.findOne", key = "#p0.getId()")
 	public AdditionResponse updateOneAddition(AdditionRequest additionRequest) {
 		AdditionEntity additionEntity = additionRepo.findOne(additionRequest
