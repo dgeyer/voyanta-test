@@ -39,9 +39,9 @@ public class AdditionServiceImpl implements AdditionService {
 	@Autowired
 	private AdditionListEntityRepository additionListRepo;
 	@Value("${voyanta.max-operations}")
-	private Integer maxOperations;
-	@Value("${max-operation-list-size}")
-	private Integer maxOperationsListSize;
+	private String maxOperations;
+	@Value("${voyanta.max-operation-list-size}")
+	private String maxOperationsListSize;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -62,12 +62,13 @@ public class AdditionServiceImpl implements AdditionService {
 	}
 
 	private void validateSyncRequestSize(AdditionRequestList additionRequestList) {
-		if (additionRequestList.getAdditionList().size() > maxOperationsListSize) {
+		if (additionRequestList.getAdditionList().size() > Integer
+				.valueOf(maxOperationsListSize)) {
 			throw new IllegalArgumentException("this service max list size is "
 					+ maxOperationsListSize + " use /addition/async instead");
 		}
 		for (AdditionRequest request : additionRequestList.getAdditionList()) {
-			if (request.getAddends().length > maxOperations) {
+			if (request.getAddends().length > Integer.valueOf(maxOperations)) {
 				throw new IllegalArgumentException(
 						"this service max addends per addition is "
 								+ maxOperations

@@ -1,5 +1,6 @@
 package com.voyanta.challenge.web;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
@@ -32,13 +33,15 @@ public class AdditionController {
 	private AdditionService additionService;
 
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public @ResponseBody Callable<AdditionResponseList> add(
+	public @ResponseBody Callable<List<AdditionResponse>> add(
 			@Valid @RequestBody AdditionRequestList additionRequestList)
 			throws InterruptedException, ExecutionException {
 
-		return new Callable<AdditionResponseList>() {
-			public AdditionResponseList call() throws Exception {
-				return additionService.processSync(additionRequestList);
+		return new Callable<List<AdditionResponse>>() {
+			public List<AdditionResponse> call() throws Exception {
+				AdditionResponseList response = additionService
+						.processSync(additionRequestList);
+				return response.getResponseList();
 			}
 		};
 	}
