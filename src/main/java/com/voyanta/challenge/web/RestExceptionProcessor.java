@@ -1,7 +1,11 @@
 package com.voyanta.challenge.web;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestExceptionProcessor extends ResponseEntityExceptionHandler {
 
 	private static final String BLANK = " ";
+	final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -55,6 +60,9 @@ public class RestExceptionProcessor extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex,
 			Object body, HttpHeaders headers, HttpStatus status,
 			WebRequest request) {
+		StringWriter writer = new StringWriter();
+		ex.printStackTrace(new PrintWriter(writer));
+		logger.debug("{}", writer.toString());
 		String error = ex.getMessage();
 		if (ex instanceof IllegalArgumentException) {
 			status = HttpStatus.BAD_REQUEST;

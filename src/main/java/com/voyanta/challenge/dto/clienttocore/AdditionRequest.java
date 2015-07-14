@@ -19,15 +19,17 @@ public class AdditionRequest {
 	@NotNull
 	@Size(min = 2)
 	Number[] addends;
+	private Long additionListId;
 
 	public AdditionRequest() {
 		super();
 	}
 
-	public AdditionRequest(String id, Number[] addends) {
+	public AdditionRequest(String id, Number[] addends, Long additionListId) {
 		super();
 		this.id = id;
 		this.addends = addends;
+		this.additionListId = additionListId;
 	}
 
 	public String getId() {
@@ -44,6 +46,14 @@ public class AdditionRequest {
 
 	public void setAddends(Number[] addends) {
 		this.addends = addends;
+	}
+
+	public Long getAdditionListId() {
+		return additionListId;
+	}
+
+	public void setAdditionListId(Long additionListId) {
+		this.additionListId = additionListId;
 	}
 
 }

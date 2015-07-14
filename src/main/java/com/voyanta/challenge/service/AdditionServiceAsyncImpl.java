@@ -30,11 +30,17 @@ public class AdditionServiceAsyncImpl implements AdditionServiceAsync {
 		logger.debug("Executing addition in thread {}", Thread.currentThread()
 				.getName());
 		logger.debug("findOne of additionEntity id {}", additionRequest.getId());
+		AdditionResponse response = buildAdditionResponse(additionRequest);
+		return new AsyncResult<AdditionResponse>(response);
+	}
+
+	private AdditionResponse buildAdditionResponse(
+			AdditionRequest additionRequest) {
 		AdditionEntity additionEntity = this.repository.findOne(additionRequest
 				.getId());
 		AdditionResponse response = buildAdditionResponse(additionRequest,
 				additionEntity);
-		return new AsyncResult<AdditionResponse>(response);
+		return response;
 	}
 
 	private AdditionResponse buildAdditionResponse(

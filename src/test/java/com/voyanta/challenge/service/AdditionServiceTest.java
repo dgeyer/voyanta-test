@@ -9,9 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import com.voyanta.challenge.VoyantaChallengeConfiguration;
 import com.voyanta.challenge.dto.clienttocore.AdditionRequest;
@@ -19,32 +18,32 @@ import com.voyanta.challenge.dto.clienttocore.AdditionRequestList;
 import com.voyanta.challenge.dto.coretoclient.AdditionResponseList;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = VoyantaChallengeConfiguration.class, loader = AnnotationConfigContextLoader.class)
+@SpringApplicationConfiguration(classes = VoyantaChallengeConfiguration.class)
 public class AdditionServiceTest {
 
-	private static final int MAX_ADDENDS_IN_ONE_REQUEST = 1000;
-	private static final int MAX_REQUEST = 1000000;
+	private static final int MAX_ADDENDS_IN_ONE_REQUEST = 10;
+	private static final int MAX_REQUEST = 10;
 	@Autowired
 	AdditionService additionService;
 
 	@Test
-	public void testAddVoidRequest() throws Exception {
+	public void shouldProcessAvoidRequest() throws Exception {
 
 		AdditionRequestList request = Mockito.mock(AdditionRequestList.class);
-		AdditionResponseList response = additionService.add(request);
+		AdditionResponseList response = additionService.processSync(request);
 
 		Assert.assertNotNull(response);
 		Assert.assertTrue(response.getResponseList().size() == 0);
 	}
 
 	@Test
-	public void testAddNullRequest() throws Exception {
-		AdditionResponseList response = additionService.add(null);
+	public void shouldProcessANullRequest() throws Exception {
+		AdditionResponseList response = additionService.processSync(null);
 		Assert.assertTrue(response.getResponseList().size() == 0);
 	}
 
 	@Test
-	public void testAdd() throws Exception {
+	public void shouldProcessManyRequests() throws Exception {
 
 		AdditionRequestList requestList = new AdditionRequestList();
 
@@ -61,9 +60,9 @@ public class AdditionServiceTest {
 			requestList.add(request);
 		}
 
-		AdditionResponseList response = additionService.add(requestList);
+		AdditionResponseList response = additionService.processSync(requestList);
 		Assert.assertNotNull(response);
-		Assert.assertTrue(response.getResponseList().size() > 0);
+		Assert.assertTrue(response.getResponseList().size() == MAX_REQUEST);
 	}
 
 }

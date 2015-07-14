@@ -39,7 +39,7 @@ public class AditionUtilTest {
 	public void calcuateAndSaveshouldUseAdditionfacadeAndSave() {
 		Integer[] addendsArray = {};
 		AdditionRequest additionRequest = new AdditionRequest(
-				"testAdditionUtil", addendsArray);
+				"testAdditionUtil", addendsArray, Long.valueOf(1));
 		AdditionResponse response = new AdditionResponse(
 				additionRequest.getId(), BigDecimal.ZERO);
 		AdditionEntity entity = new AdditionEntity(response.getId(),
