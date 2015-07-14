@@ -6,7 +6,7 @@ import org.junit.Test;
 public class AddendsTest {
 
 	@Test
-	public void createShortAddends() {
+	public void shouldacceptShortAddends() {
 		Short[] addendsArray = { Short.MIN_VALUE, Short.MIN_VALUE,
 				Short.MIN_VALUE };
 		Elements<Number> addends = createAddends(addendsArray);
@@ -14,7 +14,7 @@ public class AddendsTest {
 	}
 
 	@Test
-	public void createIntegerAddends() {
+	public void shouldacceptIntegerAddends() {
 		Integer[] addendsArray = { Integer.MIN_VALUE, Integer.MIN_VALUE,
 				Integer.MIN_VALUE };
 		Elements<Number> addends = createAddends(addendsArray);
@@ -22,14 +22,14 @@ public class AddendsTest {
 	}
 
 	@Test
-	public void createLongAddends() {
+	public void shouldacceptLongAddends() {
 		Long[] addendsArray = { Long.MIN_VALUE, Long.MIN_VALUE, Long.MIN_VALUE };
 		Elements<Number> addends = createAddends(addendsArray);
 		Assert.assertTrue(addendsArray == addends.getElements());
 	}
 
 	@Test
-	public void createDoubleAddends() {
+	public void shouldacceptDoubleAddends() {
 		Double[] addendsArray = { Double.MIN_VALUE, Double.MIN_VALUE,
 				Double.MIN_VALUE };
 		Elements<Number> addends = createAddends(addendsArray);
@@ -39,7 +39,7 @@ public class AddendsTest {
 	}
 
 	@Test
-	public void createFloatAddends() {
+	public void shouldacceptFloatAddends() {
 		Float[] addendsArray = { Float.MIN_VALUE, Float.MIN_VALUE,
 				Float.MIN_VALUE };
 		Elements<Number> addends = createAddends(addendsArray);

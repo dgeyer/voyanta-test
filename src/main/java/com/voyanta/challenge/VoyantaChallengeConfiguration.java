@@ -33,7 +33,7 @@ public class VoyantaChallengeConfiguration implements AsyncConfigurer {
 
 	@Override
 	public Executor getAsyncExecutor() {
-		// FIXME: configure the thread pool in the application service
+		// FIXME: configure the thread pool in the application server
 		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
 		taskExecutor.setCorePoolSize(THREAD_POOL_SIZE);
 		taskExecutor.setMaxPoolSize(MAX_POOL_SIZE);

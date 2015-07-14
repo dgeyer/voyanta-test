@@ -1,45 +1,26 @@
 package com.voyanta.challenge.domain;
 
-import java.math.BigDecimal;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AdditionTest {
 
-	@Test
-	public void testAdditionClient() {
-		Number[] addends = { 1, 2, 3 };
-		Number result = initAndPerform("testAdditionClient", addends);
-
-		Assert.assertEquals(BigDecimal.valueOf(6),
-				BigDecimal.valueOf(result.intValue()));
-	}
+	@Mock
+	private AdditionExecution additionExecution;
+	@Mock
+	private Elements<Number> addends;
 
 	@Test
-	public void testEmptyAddends() {
-		Number[] addends = {};
-		Number result = initAndPerform("testEmptyAddends", addends);
+	public void shouldDelegatetoCalculable() {
+		Addition addition = new Addition("shouldDelegatetoCalculableId",
+				additionExecution, addends);
+		addition.perform();
+		Mockito.verify(additionExecution, Mockito.times(1)).calculate(addends);
 
-		Assert.assertEquals(BigDecimal.ZERO,
-				BigDecimal.valueOf(result.intValue()));
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testIllegalAddends() {
-		Number[] addends = { new AtomicInteger(1), new AtomicInteger(2),
-				new AtomicInteger(3) };
-		initAndPerform("testIllegalAddends", addends);
-	}
-
-	private Number initAndPerform(String id, Number[] addends) {
-		Calculable<Number> additionCalculable = new AdditionExecution();
-		Elements<Number> elements = new Addends(addends);
-		Operation addition = new Addition(id, additionCalculable, elements);
-
-		Number result = addition.perform();
-		return result;
 	}
 
 }

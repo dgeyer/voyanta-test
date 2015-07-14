@@ -37,9 +37,10 @@ public class AdditionExecutionTest {
 	}
 
 	@Test
-	public void addDoublesWithOverflow() {
-		Double[] addendsArray = { Double.MAX_VALUE, Double.MAX_VALUE,
-				Double.MAX_VALUE };
+	public void shouldAddBigValues() {
+		BigDecimal[] addendsArray = { BigDecimal.valueOf(Double.MAX_VALUE),
+				BigDecimal.valueOf(Double.MAX_VALUE),
+				BigDecimal.valueOf(Double.MAX_VALUE) };
 		Elements<Number> addends = new Addends(addendsArray);
 		Calculable<Number> additionExecution = new AdditionExecution();
 		Assert.assertEquals(
@@ -51,7 +52,7 @@ public class AdditionExecutionTest {
 	}
 
 	@Test
-	public void addDoubles() {
+	public void ShouldAddDoubles() {
 		Double[] addendsArray = { 3.3D, 4.3D, 2.2D };
 		Elements<Number> addends = new Addends(addendsArray);
 		Calculable<Number> additionExecution = new AdditionExecution();

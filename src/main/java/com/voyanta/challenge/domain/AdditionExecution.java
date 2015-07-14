@@ -3,7 +3,7 @@ package com.voyanta.challenge.domain;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-final class AdditionExecution implements Calculable<Number> {
+class AdditionExecution implements Calculable<Number> {
 
 	@Override
 	public Number calculate(Elements<Number> elements) {

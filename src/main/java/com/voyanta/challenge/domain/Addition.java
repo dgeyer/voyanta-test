@@ -1,6 +1,5 @@
 package com.voyanta.challenge.domain;
 
-
 final class Addition extends Operation {
 
 	public Addition(String id, Calculable<Number> execution,
