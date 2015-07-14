@@ -32,6 +32,12 @@ public class AdditionRequest {
 		this.additionListId = additionListId;
 	}
 
+	public AdditionRequest(String id, Number[] addends) {
+		super();
+		this.id = id;
+		this.addends = addends;
+	}
+
 	public String getId() {
 		return id;
 	}
