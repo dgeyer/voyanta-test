@@ -1,23 +1,19 @@
 package com.voyanta.challenge.dto.clienttocore;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@Component
-@Scope(value = "prototype")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AdditionRequest {
 
-	@NotBlank
+	@NotBlank(message = "must specify Id")
 	private String id;
-	@NotNull
-	@Size(min = 2)
+	@NotNull(message = "must specify addends")
+	@NotEmpty(message = "must specify addends")
 	Number[] addends;
 	private Long additionListId;
 

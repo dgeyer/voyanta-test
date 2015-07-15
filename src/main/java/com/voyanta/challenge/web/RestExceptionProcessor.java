@@ -1,51 +1,32 @@
 package com.voyanta.challenge.web;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ControllerAdvice
-public class RestExceptionProcessor extends ResponseEntityExceptionHandler {
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.voyanta.challenge.dto.coretoclient.ErrorResponse;
+
+@ControllerAdvice(basePackages = { "com.voyanta.challenge.web" })
+public class RestExceptionProcessor {
 
 	private static final String BLANK = " ";
-	final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(
-			MethodArgumentNotValidException ex, HttpHeaders headers,
-			HttpStatus status, WebRequest request) {
-		List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
-		List<ObjectError> globalErrors = ex.getBindingResult()
-				.getGlobalErrors();
-		StringBuilder error = new StringBuilder();
-		for (FieldError fieldError : fieldErrors) {
-			error.append(fieldError.getField()).append(BLANK)
-					.append(fieldError.getDefaultMessage());
-		}
-		for (ObjectError objectError : globalErrors) {
-			error.append(objectError.getObjectName()).append(BLANK)
-					.append(objectError.getDefaultMessage());
-		}
-		return new ResponseEntity<Object>(error.toString(), headers, status);
-	}
-
-	@Override
-	protected ResponseEntity<Object> handleHttpMessageNotReadable(
-			HttpMessageNotReadableException ex, HttpHeaders headers,
-			HttpStatus status, WebRequest request) {
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	protected void handleHttpMessageNotReadable(
+			HttpMessageNotReadableException ex, HttpServletResponse response)
+			throws IOException {
 		Throwable mostSpecificCause = ex.getMostSpecificCause();
 		String error;
 		if (mostSpecificCause != null) {
@@ -53,20 +34,27 @@ public class RestExceptionProcessor extends ResponseEntityExceptionHandler {
 		} else {
 			error = ex.getMessage();
 		}
-		return new ResponseEntity<Object>(error, headers, status);
+		this.writeInHttpResponse(error, response);
+		response.setStatus(HttpStatus.BAD_REQUEST.value());
 	}
 
-	@Override
-	protected ResponseEntity<Object> handleExceptionInternal(Exception ex,
-			Object body, HttpHeaders headers, HttpStatus status,
-			WebRequest request) {
+	@ExceptionHandler(IllegalArgumentException.class)
+	protected void handleExceptionInternal(IllegalArgumentException ex,
+			HttpServletResponse response) throws IOException {
 		StringWriter writer = new StringWriter();
 		ex.printStackTrace(new PrintWriter(writer));
 		logger.debug("{}", writer.toString());
 		String error = ex.getMessage();
-		if (ex instanceof IllegalArgumentException) {
-			status = HttpStatus.BAD_REQUEST;
-		}
-		return new ResponseEntity<Object>(error, headers, status);
+		int status = HttpStatus.BAD_REQUEST.value();
+		this.writeInHttpResponse(error, response);
+		response.setStatus(status);
+	}
+
+	private void writeInHttpResponse(String text, HttpServletResponse response)
+			throws IOException {
+		ErrorResponse error = new ErrorResponse(text);
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		response.getWriter().write(mapper.writeValueAsString(error));
 	}
 }

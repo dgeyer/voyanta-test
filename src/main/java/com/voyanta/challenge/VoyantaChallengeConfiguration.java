@@ -17,12 +17,17 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 
 @SpringBootApplication
 @EnableAsync
 @EnableJpaRepositories
 @EnableCaching
 @PropertySource("classpath:product_config.properties")
+@EnableWebMvc
 public class VoyantaChallengeConfiguration implements AsyncConfigurer {
 
 	private static final int MAX_POOL_SIZE = 42;
@@ -50,6 +55,12 @@ public class VoyantaChallengeConfiguration implements AsyncConfigurer {
 	}
 
 	@Bean
+	public ExceptionHandlerExceptionResolver exceptionHandlerExceptionResolver() {
+		ExceptionHandlerExceptionResolver er = new ExceptionHandlerExceptionResolver();
+		return er;
+	}
+
+	@Bean
 	public CacheManager getEhCacheManager() {
 		return new EhCacheCacheManager(getEhCacheFactory().getObject());
 	}
@@ -60,5 +71,10 @@ public class VoyantaChallengeConfiguration implements AsyncConfigurer {
 		factoryBean.setConfigLocation(new ClassPathResource("ehcache.xml"));
 		factoryBean.setShared(true);
 		return factoryBean;
+	}
+
+	@Bean
+	public Validator getLocalValidatorFactoryBean() {
+		return new LocalValidatorFactoryBean();
 	}
 }

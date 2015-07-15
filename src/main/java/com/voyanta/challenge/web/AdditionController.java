@@ -7,6 +7,8 @@ import java.util.concurrent.ExecutionException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -32,9 +34,11 @@ public class AdditionController {
 	@Autowired
 	private AdditionService additionService;
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public @ResponseBody Callable<List<AdditionResponse>> add(
-			@Valid @RequestBody AdditionRequestList additionRequestList)
+			@RequestBody @Valid AdditionRequestList additionRequestList)
 			throws InterruptedException, ExecutionException {
 
 		return new Callable<List<AdditionResponse>>() {
@@ -65,8 +69,6 @@ public class AdditionController {
 		int httpStatus = additionService.findAdditionListStatus(id);
 
 		response.setStatus(httpStatus);
-		response.setHeader(HttpHeaders.LOCATION, "addition/async/" + id);
-
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "async/{id}")

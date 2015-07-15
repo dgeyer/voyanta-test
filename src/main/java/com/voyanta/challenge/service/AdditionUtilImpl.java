@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.voyanta.challenge.dao.AdditionEntityRepository;
@@ -35,7 +36,12 @@ public class AdditionUtilImpl implements AdditionUtil {
 				additionRequest.getAddends());
 		AdditionEntity additionEntity = buildAdditionEntity(additionRequest,
 				response);
-		additionEntity = this.additionEntityRepo.save(additionEntity);
+		try {
+			additionEntity = this.additionEntityRepo.save(additionEntity);
+		} catch (DataIntegrityViolationException ex) {
+			throw new IllegalArgumentException(
+					"additions of really big numbers are not supported yet!");
+		}
 		logger.debug("saved addition entity with id {}", additionEntity.getId());
 		return response;
 

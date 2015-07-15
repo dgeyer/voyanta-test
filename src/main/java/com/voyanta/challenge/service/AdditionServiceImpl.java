@@ -1,5 +1,7 @@
 package com.voyanta.challenge.service;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -13,7 +15,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.voyanta.challenge.dao.AdditionEntityRepository;
 import com.voyanta.challenge.dao.AdditionListEntityRepository;
@@ -28,6 +32,7 @@ import com.voyanta.challenge.dto.coretoclient.AdditionResponseList;
 @Service
 public class AdditionServiceImpl implements AdditionService {
 
+	private static final String DEFAULT_MAX_OPERATIONS = "10";
 	@Autowired
 	private AdditionServiceAsync additionServiceAsync;
 	@Autowired
@@ -44,6 +49,7 @@ public class AdditionServiceImpl implements AdditionService {
 	private String maxOperationsListSize;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private static final String BLANK = " ";
 
 	@Override
 	public AdditionResponseList processSync(
@@ -62,25 +68,67 @@ public class AdditionServiceImpl implements AdditionService {
 	}
 
 	private void validateSyncRequestSize(AdditionRequestList additionRequestList) {
-		if (additionRequestList.getAdditionList().size() > Integer
-				.valueOf(maxOperationsListSize)) {
-			throw new IllegalArgumentException("this service max list size is "
-					+ maxOperationsListSize + " use /addition/async instead");
-		}
-		for (AdditionRequest request : additionRequestList.getAdditionList()) {
-			if (request.getAddends().length > Integer.valueOf(maxOperations)) {
+		try {
+			if (additionRequestList.getAdditionList() != null
+					&& additionRequestList.getAdditionList().size() > Integer
+							.valueOf(this.maxOperationsListSize)) {
 				throw new IllegalArgumentException(
-						"this service max addends per addition is "
-								+ maxOperations
+						"this service max list size is "
+								+ this.maxOperationsListSize
 								+ " use /addition/async instead");
 			}
+			if (additionRequestList != null) {
+				for (AdditionRequest request : additionRequestList
+						.getAdditionList()) {
+					if (request.getAddends() != null
+							&& request.getAddends().length > Integer
+									.valueOf(this.maxOperations)) {
+						throw new IllegalArgumentException(
+								"this service max addends per addition is "
+										+ this.maxOperations
+										+ " use /addition/async instead");
+					}
+				}
+			}
+		} catch (NumberFormatException e) {
+			StringWriter writer = new StringWriter();
+			e.printStackTrace(new PrintWriter(writer));
+			logger.debug("{}", writer.toString());
+			this.maxOperations = DEFAULT_MAX_OPERATIONS;
+			this.maxOperationsListSize = DEFAULT_MAX_OPERATIONS;
+		}
+
+	}
+
+	private void validateRequest(AdditionRequestList additionRequestList) {
+		StringBuilder message = new StringBuilder();
+		if (additionRequestList.getId() == null) {
+			message.append("additionList id must be set").append(BLANK);
+		}
+		if (additionRequestList.getAdditionList() == null
+				|| additionRequestList.getAdditionList().isEmpty()) {
+			message.append("additionList cannot must be set").append(BLANK);
+		}
+		for (AdditionRequest request : additionRequestList.getAdditionList()) {
+			if (StringUtils.isEmpty(request.getId())) {
+				message.append("All additions ids must be set").append(BLANK);
+			}
+			if (request.getAddends() == null) {
+				message.append("Addends must be set in all additions").append(
+						BLANK);
+			}
+		}
+		if (message.length() > 0) {
+			throw new IllegalArgumentException(message.toString());
 		}
 	}
 
 	@Override
+	@Async
 	public List<Future<AdditionResponse>> processAsync(
 			AdditionRequestList additionRequestList)
 			throws InterruptedException {
+		validateRequest(additionRequestList);
 		markAdditionResquestListStatus(additionRequestList,
 				HttpStatus.PROCESSING.value());
 		List<Future<AdditionResponse>> results = new LinkedList<Future<AdditionResponse>>();
